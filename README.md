@@ -1,94 +1,120 @@
-# E-commerce Medallion Lakehouse Pipeline
+# E-commerce Medallion Lakehouse Pipeline 📊
 
-Pipeline analítico de referencia para transacciones de e-commerce. Implementa capas **Bronze, Silver y Gold** con Python, DuckDB, Parquet y Dagster, y expone agregados con Streamlit. El repositorio incluye datos sintéticos reproducibles; el dataset de Olist se descarga por separado desde Kaggle.
+[![Python](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Status](https://img.shields.io/badge/status-active-brightgreen.svg)](#)
+[![Tests](https://github.com/longaresf/ecommerce-medallion-lakehouse-pipeline/actions/workflows/tests.yml/badge.svg)](https://github.com/longaresf/ecommerce-medallion-lakehouse-pipeline/actions/workflows/tests.yml)
 
-## Arquitectura
+A robust, production-ready data lakehouse and analytics pipeline for e-commerce transactions. This repository demonstrates an end-to-end architecture implementing **Medallion design patterns (Bronze, Silver, Gold)** using Python, DuckDB, Parquet, and **Dagster** orchestration, paired with an interactive Streamlit dashboard.
+
+## 📋 Project Overview
+
+Building reliable data platforms requires systematic ingestion, strict relational modeling, and robust orchestration. This project implements an enterprise-grade lakehouse pipeline that ingests raw transactional sources idempotently, transforms them into a clean dimensional model (Star Schema), aggregates business metrics, and automates execution workflows with Dagster.
+
+---
+
+## ✨ Core Pipeline Architecture
 
 ```text
-CSV / JSON (Olist o sintéticos)
-        │
-        ▼
-Bronze: Parquet crudo + claves de origen + upsert idempotente
-        │
-        ▼
-Silver: dimensiones y hechos depurados con DuckDB SQL
-        │
-        ▼
-Gold: ventas, logística, retención y pagos
-        │
-        ├── Streamlit
-        └── consumidores analíticos
-```
+CSV / JSON (Olist or Synthetic)
+       │
+       ▼
+Bronze: Raw Parquet + source metadata + idempotent upserts
+       │
+       ▼
+Silver: Cleaned dimensions & fact tables powered by DuckDB SQL
+       │
+       ▼
+Gold: Business aggregations (sales, logistics, retention, payments)
+       │
+       ├── Streamlit Dashboard
+       └── Downstream Consumers
 
-### Capas y modelo dimensional
+    Bronze Layer (pipeline/bronze.py): Ingests raw CSV/JSON files, appends ingestion timestamps and source metadata, and normalizes entities into Parquet files with idempotent upserts based on natural keys.
 
-- **Bronze** conserva las columnas de entrada y agrega `_source_file` y `_ingested_at`. Los CSV/JSON se normalizan con DuckDB; cada entidad se consolida en un Parquet. Las claves naturales (incluidas las compuestas de ítems y pagos) se usan para hacer upsert y permitir reejecuciones y correcciones sin duplicar registros.
-- **Silver** limpia textos y números, trata fechas inválidas con conversiones tolerantes y deduplica versiones mediante `ROW_NUMBER()`. `dim_customers`, `dim_products` y `dim_sellers` tienen claves de negocio estables. `fct_orders` tiene grano de **línea de pedido** (`order_id`, `order_item_id`) y referencias válidas a las tres dimensiones. `stg_payments` conserva el grano de pago para no duplicar importes al unirlo a líneas.
-- **Gold** genera `monthly_sales_by_category`, `delivery_metrics`, `customer_retention` y `payment_distribution`, cada una con granularidad explícita en SQL. Los agregados se materializan en Parquet.
+    Silver Layer (pipeline/silver.py): Cleans text/numeric fields, handles missing or invalid dates gracefully, and deduplicates records. Builds a dimensional model consisting of dim_customers, dim_products, dim_sellers, and fct_orders (at the order-item grain) alongside staged payment tables.
 
-El SQL usa CTEs y funciones de ventana en las deduplicaciones y el cálculo de retención. DuckDB ejecuta lectura, transformaciones y agregaciones; Pandas se utiliza para preparar datos sintéticos y presentar resultados en el dashboard.
+    Gold Layer (pipeline/gold.py): Constructs analytical aggregation tables (monthly_sales_by_category, delivery_metrics, customer_retention, payment_distribution) ready for consumption.
 
-## Requisitos
+    Orchestration (orchestration/defs.py): Defines modular Dagster Assets that automate the complete sequential data flow from Bronze through Gold.
 
-- Python 3.11 recomendado (dependencias fijadas en `requirements.txt`).
-- Para contenedores: Docker y Docker Compose.
-- Opcional: cuenta de Kaggle para descargar Olist. Consulta [data/README.md](data/README.md).
+    Interactive Dashboard (app.py): Streamlit web application providing visual exploration of key e-commerce metrics and lakehouse tables.
 
-## Inicio rápido local
+    Automated Testing (tests/test_pipeline_integrity.py): Unit tests validating primary key uniqueness, foreign key integrity, idempotency, and non-negative aggregate metrics using pytest.
 
-```bash
+🛠️ Tech Stack
+
+    Language: Python 3.11+
+
+    Data Engine & Storage: DuckDB, Apache Parquet, PyArrow
+
+    Data Engineering & Orchestration: Dagster, Pandas, NumPy
+
+    Interactive UI & Visualization: Streamlit, Plotly
+
+    Testing & Containerization: Pytest, Docker, Docker Compose
+
+📁 Repository Structure
+Plaintext
+
+├── data/                       # Kaggle dataset guide and synthetic data generator script
+├── pipeline/                   # Modular lakehouse layers (bronze, silver, gold)
+├── orchestration/              # Dagster assets and job definitions
+├── tests/                      # End-to-end data integrity and pipeline unit tests
+├── app.py                      # Interactive Streamlit dashboard
+├── Dockerfile                  # Container image configuration
+├── docker-compose.yml          # Local multi-service orchestration setup
+├── requirements.txt            # Project Python dependencies
+└── README.md                   # Project documentation
+
+🚀 Getting Started
+1. Clone the Repository
+Bash
+
+git clone [https://github.com/longaresf/ecommerce-medallion-lakehouse-pipeline.git](https://github.com/longaresf/ecommerce-medallion-lakehouse-pipeline.git)
+cd ecommerce-medallion-lakehouse-pipeline
+
+2. Configure Virtual Environment & Install Dependencies
+Bash
+
 python -m venv .venv
-# Linux/macOS:
+# Linux / macOS:
 source .venv/bin/activate
 # Windows PowerShell:
 # .venv\Scripts\Activate.ps1
-pip install -r requirements.txt
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+
+3. Generate Sample Data & Run Dagster
+Bash
 
 python -m data.sample_ecommerce_data --output-dir data/generated
 dagster dev -m orchestration.defs
-```
 
-Abre `http://localhost:3000`, materializa los assets `bronze_layer`, `silver_layer` y `gold_layer` (o ejecuta el job desde la interfaz) y después inicia el dashboard en otra terminal:
+Open http://localhost:3000 to materialize assets and execute the pipeline.
+4. Run Unit Tests
+Bash
 
-```bash
+pytest -q
+
+📊 Running the Interactive Dashboard
+
+Launch the local Streamlit application to explore the processed gold tables and KPIs:
+Bash
+
 streamlit run app.py
-```
 
-El dashboard se abre en `http://localhost:8501`. Configura `ECOMMERCE_SOURCE_DIR` para cambiar el directorio de CSV/JSON y `ECOMMERCE_STORAGE_DIR` para cambiar el directorio de almacenamiento (por defecto `data/generated` y `storage`).
+🐋 Running via Docker Compose
 
-## Docker Compose
+Generate the sample data first, then spin up the containerized environment:
+Bash
 
-Genera primero los archivos de ejemplo:
-
-```bash
 python -m data.sample_ecommerce_data --output-dir data/generated
 docker compose up --build
-```
 
-Dagster queda disponible en `http://localhost:3000` y Streamlit en `http://localhost:8501`. Los directorios locales `data/` y `storage/` se montan como volúmenes.
+💡 Why Lakehouse Architecture & Dagster Matter
 
-## Pruebas
+Traditional data architectures often struggle with maintaining data quality across raw data silos and downstream reporting. Implementing a Medallion architecture (Bronze for raw auditability, Silver for conformed dimensional modeling, and Gold for business-ready aggregates) ensures high data reliability, traceability, and performance. Combined with code-defined orchestration via Dagster, data pipelines become fully reproducible, testable, and robust against pipeline failures.
+✒️ Author
 
-```bash
-pytest -q
-```
-
-Las pruebas construyen el pipeline con archivos temporales y verifican unicidad de la clave del hecho, integridad referencial, idempotencia de la ingesta y métricas Gold no negativas/no nulas donde corresponde.
-
-## Estructura
-
-```text
-data/             Guía de Kaggle y generador sintético
-pipeline/         Ingesta Bronze y transformaciones Silver/Gold
-orchestration/    Assets y dependencias Dagster
-tests/            Pruebas de integridad end-to-end
-app.py            Dashboard Streamlit
-storage/          Parquet materializado (ignorado por Git)
-```
-
-## Notas operativas
-
-- La ejecución es local y no requiere credenciales de nube.
-- El pipeline espera los campos estándar de Olist o equivalentes, con identificadores de entidades y pedidos compatibles.
-- Bronze usa claves naturales para reemplazar la versión previamente ingerida de una entidad. Para auditoría histórica inmutable, retén las fuentes originales fuera de `storage/`.
-- No se incluyen datos de Olist, credenciales ni artefactos generados en el control de versiones.
+Francisco Longares — Data Scientist & AI Solutions Developer — longaresf
