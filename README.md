@@ -67,6 +67,17 @@ Plaintext
 ├── requirements.txt            # Project Python dependencies
 └── README.md                   # Project documentation
 
+## 🤖 Local Automation Script (`run_local_ops.py`)
+
+To streamline local development, testing, and service deployment, a unified automation script is located at the root of the project:
+
+- **Run Unit Tests:**
+  ```bash
+  python run_local_ops.py --project [lakehouse] --action test
+
+Run Services / Pipelines:
+python run_local_ops.py --project [lakehouse] --action run
+
 🚀 Getting Started
 1. Clone the Repository
 Bash
