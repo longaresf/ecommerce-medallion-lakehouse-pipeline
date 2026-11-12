@@ -1,0 +1,25 @@
+services:
+  dagster:
+    build: .
+    command: dagster dev -m orchestration.defs -h 0.0.0.0 -p 3000
+    environment:
+      ECOMMERCE_SOURCE_DIR: /app/data/generated
+      ECOMMERCE_STORAGE_DIR: /app/storage
+      DAGSTER_HOME: /app/.dagster
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/app/data
+      - ./storage:/app/storage
+
+  dashboard:
+    build: .
+    command: streamlit run app.py --server.address=0.0.0.0 --server.port=8501
+    environment:
+      ECOMMERCE_STORAGE_DIR: /app/storage
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./storage:/app/storage
+    depends_on:
+      - dagster
