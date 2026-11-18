@@ -1,5 +1,18 @@
 # E-commerce Medallion Lakehouse Pipeline 📊
 
+[![Python](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Status](https://img.shields.io/badge/status-active-brightgreen.svg)](#)
+[![Tests](https://github.com/longaresf/ecommerce-medallion-lakehouse-pipeline/actions/workflows/tests.yml/badge.svg)](https://github.com/longaresf/ecommerce-medallion-lakehouse-pipeline/actions/workflows/tests.yml)
+
+A robust, production-ready data lakehouse and analytics pipeline for e-commerce transactions. This repository demonstrates an end-to-end architecture implementing **Medallion design patterns (Bronze, Silver, Gold)** using Python, DuckDB, Parquet, and **Dagster** orchestration, paired with an interactive Streamlit dashboard.
+
+## 📋 Project Overview
+
+Building reliable data platforms requires systematic ingestion, strict relational modeling, and robust orchestration. This project implements an enterprise-grade lakehouse pipeline that ingests raw transactional sources idempotently, transforms them into a clean dimensional model (Star Schema), aggregates business metrics, and automates execution workflows with Dagster.
+
+---
+
 ## Impacto de Negocio y Caso de Uso Operativo
 
 ### ¿Qué problema empresarial resuelve esta arquitectura?
@@ -17,19 +30,6 @@ Esta arquitectura implementa un **flujo de datos automatizado por capas (Medalli
 
 ---
 *(A continuación se detalla la arquitectura técnica, estructura del proyecto y guía de despliegue local)*
-
-[![Python](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Status](https://img.shields.io/badge/status-active-brightgreen.svg)](#)
-[![Tests](https://github.com/longaresf/ecommerce-medallion-lakehouse-pipeline/actions/workflows/tests.yml/badge.svg)](https://github.com/longaresf/ecommerce-medallion-lakehouse-pipeline/actions/workflows/tests.yml)
-
-A robust, production-ready data lakehouse and analytics pipeline for e-commerce transactions. This repository demonstrates an end-to-end architecture implementing **Medallion design patterns (Bronze, Silver, Gold)** using Python, DuckDB, Parquet, and **Dagster** orchestration, paired with an interactive Streamlit dashboard.
-
-## 📋 Project Overview
-
-Building reliable data platforms requires systematic ingestion, strict relational modeling, and robust orchestration. This project implements an enterprise-grade lakehouse pipeline that ingests raw transactional sources idempotently, transforms them into a clean dimensional model (Star Schema), aggregates business metrics, and automates execution workflows with Dagster.
-
----
 
 ## ✨ Core Pipeline Architecture
 
