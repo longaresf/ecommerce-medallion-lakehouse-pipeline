@@ -3,7 +3,7 @@
 [![Python](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/status-active-brightgreen.svg)](#)
-[![Tests](https://github.com/longaresf/ecommerce-medallion-lakehouse-pipeline/actions/workflows/tests.yml/badge.svg)](https://github.com/longaresf/ecommerce-medallion-lakehouse-pipeline/actions/workflows/tests.yml)
+[![Tests](https://github.com/longaresf/ecommerce-medallion-lakehouse-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/longaresf/ecommerce-medallion-lakehouse-pipeline/actions/workflows/ci.yml)
 
 A robust, production-ready data lakehouse and analytics pipeline for e-commerce transactions. This repository demonstrates an end-to-end architecture implementing **Medallion design patterns (Bronze, Silver, Gold)** using Python, DuckDB, Parquet, and **Dagster** orchestration, paired with an interactive Streamlit dashboard.
 
