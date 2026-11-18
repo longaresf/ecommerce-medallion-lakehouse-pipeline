@@ -141,6 +141,6 @@ docker compose up --build
 💡 Why Lakehouse Architecture & Dagster Matter
 
 Traditional data architectures often struggle with maintaining data quality across raw data silos and downstream reporting. Implementing a Medallion architecture (Bronze for raw auditability, Silver for conformed dimensional modeling, and Gold for business-ready aggregates) ensures high data reliability, traceability, and performance. Combined with code-defined orchestration via Dagster, data pipelines become fully reproducible, testable, and robust against pipeline failures.
-✒️ Author
 
+✒️ Author
 Francisco Longares — Data Scientist & AI Solutions Developer — longaresf
