@@ -26,7 +26,7 @@ This repository implements an automated, production-grade pipeline that replaces
 * **Production reliability:** Automated data quality checks, unit testing (`pytest`), and CI/CD workflows.
 
 ---
-*(A continuación se detalla la arquitectura técnica, estructura del proyecto y guía de despliegue local)*
+*(The modeling methodology, code structure, and execution process are detailed below)*
 
 ## ✨ Core Pipeline Architecture
 
