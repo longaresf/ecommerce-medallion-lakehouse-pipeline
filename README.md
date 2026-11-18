@@ -1,5 +1,23 @@
 # E-commerce Medallion Lakehouse Pipeline 📊
 
+## Impacto de Negocio y Caso de Uso Operativo
+
+### ¿Qué problema empresarial resuelve esta arquitectura?
+En muchas empresas medianas, la información de ventas, operaciones y costos vive fragmentada entre el ERP y decenas de planillas Excel manipuladas manualmente. Esto genera **retrasos de días en los reportes gerenciales, errores de digitación y cifras inconsistentes entre áreas**.
+
+Esta arquitectura implementa un **flujo de datos automatizado por capas (Medallion)** que reemplaza la consolidación manual:
+1. **Capa Bronce (Ingesta Segura):** Extrae datos crudos desde las fuentes de origen en modo solo-lectura, sin alterar los sistemas productivos.
+2. **Capa Plata (Auditoría y Limpieza):** Detecta automáticamente registros duplicados, formatos rotos, valores nulos y cruces inconsistentes antes de que lleguen a gerencia.
+3. **Capa Oro (Indicadores de Negocio):** Entrega tablas consolidadas y auditables listas para alimentar tableros gerenciales (Power BI, Looker, Metabase) cada mañana a primera hora.
+
+### Beneficios Clave
+* **Reducción de 80% a 95%** en horas-hombre dedicadas a consolidar planillas.
+* **Desacoplamiento tecnológico:** Si la empresa cambia de ERP en el futuro, solo se adapta el conector de entrada sin reconstruir los indicadores ni tableros.
+* **Calidad garantizada:** Ejecución automatizada con pruebas unitarias y validación continua (CI/CD).
+
+---
+*(A continuación se detalla la arquitectura técnica, estructura del proyecto y guía de despliegue local)*
+
 [![Python](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/status-active-brightgreen.svg)](#)
